@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+    "http://struts.apache.org/dtds/struts-2.5.dtd">
+<struts>
+
+
+	<!-- 指定每次配置文件更改后，自动重新加载 -->
+	<constant name="struts.configuration.xml.reload" value="true"></constant>
+
+
+
+
+	<package name="defaultPack" extends="struts-default" namespace="/*"
+		strict-method-invocation="false">
+
+
+		<interceptors>
+
+			<interceptor name="SecurityInterceptor"
+				class="pers.kp.interceptor.SecurityInterceptor"></interceptor>
+
+			<interceptor-stack name="MyInterceptor">
+
+				<interceptor-ref name="SecurityInterceptor">
+
+					<param name="excludeMethods">login</param>
+
+					<param name="name">执行拦截器</param>
+				</interceptor-ref>
+
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+
+
+
+		</interceptors>
+
+		<default-interceptor-ref name="MyInterceptor"></default-interceptor-ref>
+
+	</package>
+
+
+
+
+
+
+
+
+
+
+
+	<package name="sys" extends="defaultPack" namespace="/sys"
+		strict-method-invocation="false">
+
+		
+		<action name="user_*" class="pers.kp.action.UserAction" method="{1}">
+		
+			<result name="success">/WEB-INF/user/user.jsp</result>
+			<result name="add">/WEB-INF/user/user_add.jsp</result>
+			<result name="query" type="redirectAction">user_query</result>
+			<result name="update">/WEB-INF/user/user_update.jsp</result>
+			<result name="login">/WEB-INF/home.jsp</result>
+			<result name="input">/login.jsp</result>
+			
+		</action>
+
+
+		<action name="role_*" class="pers.kp.action.RoleAction" method="{1}">
+			<result name="success">/WEB-INF/role/role.jsp</result>
+			<result name="add">/WEB-INF/role/role_add.jsp</result>
+			<result name="query" type="redirectAction">role_query</result>
+			<result name="update">/WEB-INF/role/role_update.jsp</result>
+		</action>
+
+
+		<action name="menu_*" class="pers.kp.action.MenuAction" method="{1}">
+			<result name="success">/WEB-INF/menu/menu.jsp</result>
+			<result name="add">/WEB-INF/menu/menu_add.jsp</result>
+			<result name="query" type="redirectAction">menu_query</result>
+			<result name="update">/WEB-INF/menu/menu_update.jsp</result>
+		</action>
+
+
+
+
+
+
+	</package>
+
+
+	<package name="car" extends="struts-default" namespace="/car" strict-method-invocation="false">
+
+		<action name="car_*" class="pers.kp.action.OwnedVehicleAction" method="{1}">
+			<result name="success">/WEB-INF/vehicle/vehicle.jsp</result>
+			<result name="query" type="redirectAction">car_query</result>
+			
+			<result name="download" type="stream">
+			
+				<!-- 设置文件下载的类型  application/octet-stream 支持所有的下载类型-->
+				<param name="contentType">application/octet-stream</param>
+				
+				<!-- 文件下载的入口 ：需要我们在对应的action中添加一个 getInputStream的方法-->
+			    <param name="inputName">inputStream</param>
+			    
+			    <!-- 设置下载文件的打开方式 attachment 窗口-->
+			    <param name="contentDisposition">attachment;filename="${fileName}"</param>
+			</result>
+		
+		</action>
+
+
+	</package>
+	
+	
+	
+
+
+
+
+
+
+
+</struts>
